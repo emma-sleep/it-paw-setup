@@ -36,7 +36,7 @@ Write-Host "Installing required softwares:" -ForegroundColor $Colors.Step
 Write-Host -NoNewline " - Installing Git... " -ForegroundColor $Colors.SubStep
 if(!(Get-Command git).Path){
     if(!$WhatIfPreference){
-        winget install git.git --disable-interactivity --nowarn
+        winget install git.git --disable-interactivity --nowarn -h
     }
     Write-Host "[Installed]" -ForegroundColor $Colors.Success
 }else{
@@ -47,7 +47,7 @@ if(!(Get-Command git).Path){
 Write-Host " - Installing OpenSSH..." -NoNewline -ForegroundColor $Colors.SubStep
 if(!(Get-Command "ssh-keygen").Path){
     if(!$WhatIfPreference){
-        winget install Microsoft.OpenSSH.Beta --disable-interactivity --nowarn
+        winget install Microsoft.OpenSSH.Beta --disable-interactivity --nowarn -h
     }
     Write-Host "[Installed]" -ForegroundColor $Colors.Success
 }else{
@@ -58,7 +58,7 @@ if(!(Get-Command "ssh-keygen").Path){
 Write-Host -NoNewline " - Installing Powershell 7... " -ForegroundColor $Colors.SubStep
 if(!(Get-Command pwsh).Path){
     if(!$WhatIfPreference){
-        winget install Microsoft.PowerShell --disable-interactivity --nowarn
+        winget install Microsoft.PowerShell --disable-interactivity --nowarn -h
     }
     Write-Host "[Installed]" -ForegroundColor $Colors.Success
 }else{
