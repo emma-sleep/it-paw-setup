@@ -3,7 +3,7 @@ param ()
 
 #### Set Variables for the Script ####
 ## Microsoft Modules
-$msModules = @("PowershellGet","Microsoft.Graph","ExchangeOnlineManagement","Az.Accounts")
+$msModules = @("Microsoft.Graph","ExchangeOnlineManagement","Az.Accounts")
 ## Emma Modules
 $emmaModules = @("psmodule-boarding","psmodule-helpers","psmodule-credentials","psmodule-microsoft365","psmodule-snipeit","psmodule-reports")
 ## Paths to be created
@@ -101,6 +101,9 @@ Write-Host "---------- End ------------------"
 Write-Host " - Adding the SSH Key to the Github account..." -NoNewline -ForegroundColor $Colors.SubStep
 Start-Process "https://github.com/settings/ssh/new"
 Read-Host -Prompt "Add your public SSH key in your github profile. Once it's done, press any key to continue"
+Write-Host " - Spawning SSH agent..." -ForegroundColor $Colors.SubStep
+ssh-add "$($env:USERPROFILE)\.ssh\id_ed25519.pub"
+Write-Host "[OK]" -ForegroundColor $Colors.Success
 
 ### Creating the necessary folders
 Write-Host " "
@@ -121,6 +124,16 @@ Foreach($path in $paths){
 ### Installing necessary modules
 Write-Host " "
 Write-Host "Installing all required PowerShell modules:" -ForegroundColor $Colors.Step
+Write-Host -NoNewline " - Installing PowershellGet... " -ForegroundColor $Colors.SubStep
+if((Get-InstalledModule -Name PowershellGet -ErrorAction SilentlyContinue).count -eq 0){
+    if(!$WhatIfPreference){
+        Install-Module PowershellGet -Force -Confirm:$false
+    }
+    Write-Host "[Installed]" -ForegroundColor $Colors.Success
+}else{
+    Write-Host "[Skipped]" -ForegroundColor $Colors.Skipped
+}
+Import-Module -Name PowershellGet -Force 
 
 foreach($module in $msModules){
     Write-Host -NoNewline " - Installing $module... " -ForegroundColor $Colors.SubStep
