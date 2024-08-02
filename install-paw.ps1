@@ -34,7 +34,7 @@ Write-Host " "
 Write-Host "Installing required softwares:" -ForegroundColor $Colors.Step
 ### Git installation
 Write-Host -NoNewline " - Installing Git... " -ForegroundColor $Colors.SubStep
-if(!(Get-Command git).Path){
+if(!(Get-Command "git" -ErrorAction SilentlyContinue).Path){
     if(!$WhatIfPreference){
         winget install git.git --disable-interactivity --nowarn -h --accept-package-agreements --accept-source-agreements
     }
@@ -45,7 +45,7 @@ if(!(Get-Command git).Path){
 
 ### OpenSSH
 Write-Host " - Installing OpenSSH..." -NoNewline -ForegroundColor $Colors.SubStep
-if(!(Get-Command "ssh-keygen").Path){
+if(!(Get-Command "ssh-keygen" -ErrorAction SilentlyContinue).Path){
     if(!$WhatIfPreference){
         winget install Microsoft.OpenSSH.Beta --disable-interactivity --nowarn -h --accept-package-agreements --accept-source-agreements
     }
@@ -56,7 +56,7 @@ if(!(Get-Command "ssh-keygen").Path){
 
 ### Powershell 7 install
 Write-Host -NoNewline " - Installing Powershell 7... " -ForegroundColor $Colors.SubStep
-if(!(Get-Command pwsh).Path){
+if(!(Get-Command "pwsh" -ErrorAction SilentlyContinue).Path){
     if(!$WhatIfPreference){
         winget install Microsoft.PowerShell --disable-interactivity --nowarn -h --accept-package-agreements --accept-source-agreements
     }
