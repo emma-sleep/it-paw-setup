@@ -35,15 +35,16 @@ Write-Host " "
 Write-Host "Installing required softwares:" -ForegroundColor $Colors.Step
 
 ### WingetPathUpdater
-Write-Host " - Installing WingetPathUpdater..." -NoNewline -ForegroundColor $Colors.SubStep
+Write-Host " - Installing WingetPathUpdater..." -ForegroundColor $Colors.SubStep
 if(!$WhatIfPreference){
     winget install jazzdelightsme.WingetPathUpdater --nowarn -h --accept-package-agreements --accept-source-agreements
 }
 Write-Host "[Installed]" -ForegroundColor $Colors.Success
 ### Git installation
-Write-Host -NoNewline " - Installing Git... " -ForegroundColor $Colors.SubStep
+Write-Host " - Installing Git... " -NoNewline -ForegroundColor $Colors.SubStep
 if(!(Get-Command "git" -ErrorAction SilentlyContinue).Path){
     if(!$WhatIfPreference){
+        Write-Host ""
         winget install git.git --disable-interactivity --nowarn -h --accept-package-agreements --accept-source-agreements
     }
     Write-Host "[Installed]" -ForegroundColor $Colors.Success
@@ -55,6 +56,7 @@ if(!(Get-Command "git" -ErrorAction SilentlyContinue).Path){
 Write-Host " - Installing OpenSSH..." -NoNewline -ForegroundColor $Colors.SubStep
 if(!(Get-Command "ssh-keygen" -ErrorAction SilentlyContinue).Path){
     if(!$WhatIfPreference){
+        Write-Host ""
         winget install Microsoft.OpenSSH.Beta --disable-interactivity --nowarn -h --accept-package-agreements --accept-source-agreements
     }
     Write-Host "[Installed]" -ForegroundColor $Colors.Success
@@ -63,9 +65,10 @@ if(!(Get-Command "ssh-keygen" -ErrorAction SilentlyContinue).Path){
 }
 
 ### Powershell 7 install
-Write-Host -NoNewline " - Installing Powershell 7... " -ForegroundColor $Colors.SubStep
+Write-Host " - Installing Powershell 7... " -NoNewline -ForegroundColor $Colors.SubStep
 if(!(Get-Command "pwsh" -ErrorAction SilentlyContinue).Path){
     if(!$WhatIfPreference){
+        Write-Host ""
         winget install Microsoft.PowerShell --disable-interactivity --nowarn -h --accept-package-agreements --accept-source-agreements
     }
     Write-Host "[Installed]" -ForegroundColor $Colors.Success
