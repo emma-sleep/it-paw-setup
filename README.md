@@ -4,6 +4,9 @@ This repository is used to setup our IT Privileged Access Workstations (PAW).
 ## Prerequisites
 
 Before you install your PAW, you need to have access to Github. 
+Please follow the instruction given in our Whizzz card:
+
+https://whizzz.emma-sleep.com/share/card/how-to-become-member-to-emma-github-jZlfdeO
 
 ## Installation
 
