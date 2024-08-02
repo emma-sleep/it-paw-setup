@@ -24,7 +24,8 @@ $Colors = @{
     Skipped = "Yellow"
     Success = "Green"
 }
-
+Write-Host " "
+Write-Host " "
 Write-Host "+--------------------------------+" -ForegroundColor $Colors.Frame
 Write-Host "|" -NoNewline -ForegroundColor $Colors.Frame
 Write-Host " IT Admin toolbox' Installation " -ForegroundColor $Colors.Text -NoNewline
@@ -32,6 +33,13 @@ Write-Host "|" -ForegroundColor $Colors.Frame
 Write-Host "+--------------------------------+" -ForegroundColor $Colors.Frame
 Write-Host " "
 Write-Host "Installing required softwares:" -ForegroundColor $Colors.Step
+
+### WingetPathUpdater
+Write-Host " - Installing WingetPathUpdater..." -NoNewline -ForegroundColor $Colors.SubStep
+if(!$WhatIfPreference){
+    winget install jazzdelightsme.WingetPathUpdater --nowarn -h --accept-package-agreements --accept-source-agreements
+}
+Write-Host "[Installed]" -ForegroundColor $Colors.Success
 ### Git installation
 Write-Host -NoNewline " - Installing Git... " -ForegroundColor $Colors.SubStep
 if(!(Get-Command "git" -ErrorAction SilentlyContinue).Path){
