@@ -7,7 +7,7 @@ Before you install your PAW, you need to have access to Github.
 
 ## Installation
 
-Open a PowerShell prompt and run the following command:
+Open a PowerShell prompt (as an Administrator) and run the following command:
 
 ```powershell
 Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/emma-sleep/it-paw-setup/main/install-paw.ps1'))
