@@ -25,9 +25,6 @@ $Colors = @{
     Success = "Green"
 }
 
-## Temp for Debuging...
-Write-Host "Starting version 11..."
-
 Write-Host " "
 Write-Host " "
 Write-Host "+--------------------------------+" -ForegroundColor $Colors.Frame
