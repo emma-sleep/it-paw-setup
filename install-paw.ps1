@@ -95,7 +95,7 @@ If(!(Test-Path "$($env:USERPROFILE)\.ssh")){
 If(!(Test-Path "$($env:USERPROFILE)\.ssh\id_ed25519")){
     Write-Host " - Generating a SSH key... " -NoNewline -ForegroundColor $Colors.SubStep
     if(!$WhatIfPreference){
-        ssh-keygen -t ed25519 -f "$($env:USERPROFILE)\.ssh\id_ed25519"
+        ssh-keygen -t ed25519 -f "$($env:USERPROFILE)\\.ssh\\id_ed25519"
     }
     Write-Host "[Created]" -ForegroundColor $Colors.Success
 }else{
