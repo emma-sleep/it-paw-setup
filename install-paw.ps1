@@ -103,8 +103,16 @@ If(!(Test-Path "$($env:USERPROFILE)\.ssh\id_ed25519")){
 }
 
 Write-Host " - Installing SSH-Agent..." -NoNewline -ForegroundColor $Colors.SubStep
-if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
-    Start-Process PowerShell -Verb RunAs "-NoProfile -ExecutionPolicy Bypass -Command `"Get-Service ssh-agent | Set-Service -StartupType Automatic -PassThru | Start-Service ; start-ssh-agent.cmd`"";
+if(!$WhatIfPreference){
+    if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
+        Start-Process PowerShell -Verb RunAs "-NoProfile -ExecutionPolicy Bypass -Command `"Get-Service ssh-agent | Set-Service -StartupType Automatic -PassThru | Start-Service`"";
+    }
+}
+Write-Host "[OK]" -ForegroundColor $Colors.Success
+
+Write-Host " - Starting SSH-Agent..." -NoNewline -ForegroundColor $Colors.SubStep
+if(!$WhatIfPreference){
+    start ssh-agent
 }
 Write-Host "[OK]" -ForegroundColor $Colors.Success
 
