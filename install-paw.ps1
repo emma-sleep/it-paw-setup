@@ -26,7 +26,7 @@ $Colors = @{
 }
 
 ## Temp for Debuging...
-Write-Host "Starting version 10..."
+Write-Host "Starting version 11..."
 
 Write-Host " "
 Write-Host " "
@@ -133,6 +133,7 @@ Write-Host "[OK]" -ForegroundColor $Colors.Success
 Write-Host " - Starting SSH-Agent..." -NoNewline -ForegroundColor $Colors.SubStep
 if(!$WhatIfPreference){
     start ssh-agent
+    start-ssh-agent.cmd
 }
 Write-Host "[OK]" -ForegroundColor $Colors.Success
 
