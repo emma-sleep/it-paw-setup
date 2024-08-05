@@ -143,7 +143,7 @@ cat "$($Key).pub"
 Write-Host "---------- End ------------------"
 Write-Host " - Adding the SSH Key to the Github account..." -NoNewline -ForegroundColor $Colors.SubStep
 Start-Process "https://github.com/settings/ssh/new"
-Read-Host -Prompt "Add your public SSH key in your github profile. Once it's done, press any key to continue"
+Read-Host -Prompt "Add your public SSH key in your github profile. (Do not forget to authorize for SSO!) Once it's done, press any key to continue"
 
 Remove-Variable -Name Key
 
