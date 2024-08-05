@@ -64,6 +64,10 @@ if(!(Get-Command "ssh-keygen" -ErrorAction SilentlyContinue).Path){
     Write-Host "[Skipped]" -ForegroundColor $Colors.Skipped
 }
 
+Write-Host " - Setting up Git sshcommand..." -NoNewline -ForegroundColor $Colors.SubStep
+git config --global core.sshCommand 'C:/Windows/System32/OpenSSH/ssh.exe'
+Write-Host "[OK]" -ForegroundColor $Colors.Success
+
 ### Powershell 7 install
 Write-Host " - Installing Powershell 7... " -NoNewline -ForegroundColor $Colors.SubStep
 if(!(Get-Command "pwsh" -ErrorAction SilentlyContinue).Path){
@@ -78,7 +82,7 @@ if(!(Get-Command "pwsh" -ErrorAction SilentlyContinue).Path){
 
 ### Create SSH Key (if needed)
 Write-Host " "
-Write-Host "Setting the SSH Key (Ed25519):"
+Write-Host "Setting up SSH (Ed25519):"
 Write-Host " - Creating the ssh folder... " -NoNewline -ForegroundColor $Colors.SubStep
 If(!(Test-Path "$($env:USERPROFILE)\.ssh")){
     if(!$WhatIfPreference){
@@ -89,7 +93,7 @@ If(!(Test-Path "$($env:USERPROFILE)\.ssh")){
     Write-Host "[Skipped]" -ForegroundColor $Colors.Skipped
 }
 If(!(Test-Path "$($env:USERPROFILE)\.ssh\id_ed25519")){
-    Write-Host " - Creating a SSH key... " -NoNewline -ForegroundColor $Colors.SubStep
+    Write-Host " - Generating a SSH key... " -NoNewline -ForegroundColor $Colors.SubStep
     if(!$WhatIfPreference){
         ssh-keygen -t ed25519 -f "$($env:USERPROFILE)\.ssh\id_ed25519"
     }
@@ -98,15 +102,22 @@ If(!(Test-Path "$($env:USERPROFILE)\.ssh\id_ed25519")){
     Write-Host "[Skipped]" -ForegroundColor $Colors.Skipped
 }
 
+Write-Host " - Installing SSH-Agent..." -NoNewline -ForegroundColor $Colors.SubStep
+if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
+    Start-Process PowerShell -Verb RunAs "-NoProfile -ExecutionPolicy Bypass -Command `"Get-Service ssh-agent | Set-Service -StartupType Automatic -PassThru | Start-Service ; start-ssh-agent.cmd`"";
+}
+Write-Host "[OK]" -ForegroundColor $Colors.Success
+
+Write-Host " - Adding SSH key to the ssh-agent..." -ForegroundColor $Colors.SubStep
+ssh-add "$($env:USERPROFILE)\.ssh\id_ed25519.pub"
+Write-Host "[OK]" -ForegroundColor $Colors.Success
+
 Write-Host "---------- SSH Key --------------"
 cat "$($env:USERPROFILE)\.ssh\id_ed25519.pub"
 Write-Host "---------- End ------------------"
 Write-Host " - Adding the SSH Key to the Github account..." -NoNewline -ForegroundColor $Colors.SubStep
 Start-Process "https://github.com/settings/ssh/new"
 Read-Host -Prompt "Add your public SSH key in your github profile. Once it's done, press any key to continue"
-Write-Host " - Spawning SSH agent..." -ForegroundColor $Colors.SubStep
-ssh-add "$($env:USERPROFILE)\.ssh\id_ed25519.pub"
-Write-Host "[OK]" -ForegroundColor $Colors.Success
 
 ### Creating the necessary folders
 Write-Host " "
