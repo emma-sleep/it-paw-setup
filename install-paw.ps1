@@ -24,6 +24,7 @@ $Colors = @{
     Skipped = "Yellow"
     Success = "Green"
 }
+$username = $env:username
 Write-Host " "
 Write-Host " "
 Write-Host "+--------------------------------+" -ForegroundColor $Colors.Frame
@@ -96,6 +97,7 @@ If(!(Test-Path "$($env:USERPROFILE)\.ssh\id_ed25519")){
     Write-Host " - Generating a SSH key... " -NoNewline -ForegroundColor $Colors.SubStep
     if(!$WhatIfPreference){
         ssh-keygen -t ed25519 -f "$($env:USERPROFILE)\\.ssh\\id_ed25519"
+        icacls.exe .ssh /grant:r ${$username}:"(f)" /inheritance:r
     }
     Write-Host "[Created]" -ForegroundColor $Colors.Success
 }else{
@@ -117,7 +119,7 @@ if(!$WhatIfPreference){
 Write-Host "[OK]" -ForegroundColor $Colors.Success
 
 Write-Host " - Adding SSH key to the ssh-agent..." -ForegroundColor $Colors.SubStep
-ssh-add "$($env:USERPROFILE)\.ssh\id_ed25519.pub"
+ssh-add 
 Write-Host "[OK]" -ForegroundColor $Colors.Success
 
 Write-Host "---------- SSH Key --------------"
