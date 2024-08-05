@@ -24,7 +24,7 @@ $Colors = @{
     Skipped = "Yellow"
     Success = "Green"
 }
-$username = $env:username
+
 Write-Host " "
 Write-Host " "
 Write-Host "+--------------------------------+" -ForegroundColor $Colors.Frame
@@ -84,6 +84,7 @@ if(!(Get-Command "pwsh" -ErrorAction SilentlyContinue).Path){
 ### Create SSH Key (if needed)
 Write-Host " "
 Write-Host "Setting up SSH (Ed25519):"
+New-Variable -Name Key -Value "$env:UserProfile\.ssh\id_ed25519"
 Write-Host " - Creating the ssh folder... " -NoNewline -ForegroundColor $Colors.SubStep
 If(!(Test-Path "$($env:USERPROFILE)\.ssh")){
     if(!$WhatIfPreference){
@@ -93,16 +94,30 @@ If(!(Test-Path "$($env:USERPROFILE)\.ssh")){
 }else{
     Write-Host "[Skipped]" -ForegroundColor $Colors.Skipped
 }
-If(!(Test-Path "$($env:USERPROFILE)\.ssh\id_ed25519")){
-    Write-Host " - Generating a SSH key... " -NoNewline -ForegroundColor $Colors.SubStep
+If(!(Test-Path $Key)){
+    Write-Host " - Generating a SSH key... " -ForegroundColor $Colors.SubStep
     if(!$WhatIfPreference){
-        ssh-keygen -t ed25519 -f "$($env:USERPROFILE)\\.ssh\\id_ed25519"
-        icacls.exe .ssh /grant:r ${$username}:"(f)" /inheritance:r
+        ssh-keygen -t ed25519 -f $Key
     }
     Write-Host "[Created]" -ForegroundColor $Colors.Success
 }else{
     Write-Host "[Skipped]" -ForegroundColor $Colors.Skipped
 }
+
+Write-Host " - Fixing permissions on SSH key..." -ForegroundColor $Colors.SubStep
+if(!$WhatIfPreference){
+    # Remove Inheritance:
+    Icacls $Key /c /t /Inheritance:d
+    # Set Ownership to Owner:
+    # Key's within $env:UserProfile:
+    Icacls $Key /c /t /Grant ${env:UserName}:F
+    # Key's outside of $env:UserProfile:
+    TakeOwn /F $Key
+    Icacls $Key /c /t /Grant:r ${env:UserName}:F
+    # Remove All Users, except for Owner:
+    Icacls $Key /c /t /Remove:g Administrator "Authenticated Users" BUILTIN\Administrators BUILTIN Everyone System Users
+}
+Write-Host "[OK]" -ForegroundColor $Colors.Success
 
 Write-Host " - Installing SSH-Agent..." -NoNewline -ForegroundColor $Colors.SubStep
 if(!$WhatIfPreference){
@@ -119,15 +134,17 @@ if(!$WhatIfPreference){
 Write-Host "[OK]" -ForegroundColor $Colors.Success
 
 Write-Host " - Adding SSH key to the ssh-agent..." -ForegroundColor $Colors.SubStep
-ssh-add 
+ssh-add $Key
 Write-Host "[OK]" -ForegroundColor $Colors.Success
 
 Write-Host "---------- SSH Key --------------"
-cat "$($env:USERPROFILE)\.ssh\id_ed25519.pub"
+cat "$($Key).pub"
 Write-Host "---------- End ------------------"
 Write-Host " - Adding the SSH Key to the Github account..." -NoNewline -ForegroundColor $Colors.SubStep
 Start-Process "https://github.com/settings/ssh/new"
 Read-Host -Prompt "Add your public SSH key in your github profile. Once it's done, press any key to continue"
+
+Remove-Variable -Name Key
 
 ### Creating the necessary folders
 Write-Host " "
