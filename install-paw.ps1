@@ -60,7 +60,7 @@ if(!(Get-Command "git" -ErrorAction SilentlyContinue).Path){
 
 ### OpenSSH
 Write-Host " - Installing OpenSSH..." -NoNewline -ForegroundColor $Colors.SubStep
-if(!(Get-Command "ssh-keygen" -ErrorAction SilentlyContinue).Path){
+if(!(Get-Command "ssh" -ErrorAction SilentlyContinue).Path){
     if(!$WhatIfPreference){
         Write-Host ""
         winget install Microsoft.OpenSSH.Beta --disable-interactivity --nowarn -h --accept-package-agreements --accept-source-agreements
@@ -70,7 +70,7 @@ if(!(Get-Command "ssh-keygen" -ErrorAction SilentlyContinue).Path){
     Write-Host "[Skipped]" -ForegroundColor $Colors.Skipped
 }
 
-Write-Host " - Setting up Git sshcommand..." -NoNewline -ForegroundColor $Colors.SubStep
+Write-Host " - Setting up Git sshCommand..." -NoNewline -ForegroundColor $Colors.SubStep
 git config --global core.sshCommand 'C:/Windows/System32/OpenSSH/ssh.exe'
 Write-Host "[OK]" -ForegroundColor $Colors.Success
 
@@ -124,20 +124,13 @@ if(!$WhatIfPreference){
 }
 Write-Host "[OK]" -ForegroundColor $Colors.Success
 
-Write-Host " - Installing SSH-Agent..." -NoNewline -ForegroundColor $Colors.SubStep
+Write-Host " - Installing and starting SSH-Agent..." -NoNewline -ForegroundColor $Colors.SubStep
 if(!$WhatIfPreference){
     if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
         Start-Process PowerShell -Verb RunAs "-NoProfile -ExecutionPolicy Bypass -Command `"Get-Service ssh-agent | Set-Service -StartupType Automatic -PassThru | Start-Service`"";
     }
 }
 Write-Host "[OK]" -ForegroundColor $Colors.Success
-
-Write-Host " - Starting SSH-Agent..." -NoNewline -ForegroundColor $Colors.SubStep
-if(!$WhatIfPreference){
-    start ssh-agent
-}
-Write-Host "[OK]" -ForegroundColor $Colors.Success
-
 $ENV:SSH_AUTH_SOCK = $null
 
 Write-Host " - Adding SSH key to the ssh-agent..." -ForegroundColor $Colors.SubStep
