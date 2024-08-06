@@ -37,10 +37,15 @@ Write-Host "Installing required softwares:" -ForegroundColor $Colors.Step
 
 ### WingetPathUpdater
 Write-Host " - Installing WingetPathUpdater..." -ForegroundColor $Colors.SubStep
-if(!$WhatIfPreference){
-    winget install jazzdelightsme.WingetPathUpdater --nowarn -h --accept-package-agreements --accept-source-agreements
+if(Test-Path "C:\Windows\System32\winget.ps1"){
+    Write-Host "[Skipped]" -ForegroundColor $Colors.Skipped
+}else{
+    if(!$WhatIfPreference){
+        winget install jazzdelightsme.WingetPathUpdater --nowarn -h --accept-package-agreements --accept-source-agreements
+    }
+    Write-Host "[Installed]" -ForegroundColor $Colors.Success
 }
-Write-Host "[Installed]" -ForegroundColor $Colors.Success
+
 ### Git installation
 Write-Host " - Installing Git... " -NoNewline -ForegroundColor $Colors.SubStep
 if(!(Get-Command "git" -ErrorAction SilentlyContinue).Path){
