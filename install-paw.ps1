@@ -133,6 +133,8 @@ if(!$WhatIfPreference){
 }
 Write-Host "[OK]" -ForegroundColor $Colors.Success
 
+$ENV:SSH_AUTH_SOCK = $null
+
 Write-Host " - Adding SSH key to the ssh-agent..." -ForegroundColor $Colors.SubStep
 ssh-add $Key
 Write-Host "[OK]" -ForegroundColor $Colors.Success
@@ -168,7 +170,7 @@ Write-Host "Installing all required PowerShell modules:" -ForegroundColor $Color
 Write-Host -NoNewline " - Installing PowershellGet... " -ForegroundColor $Colors.SubStep
 if((Get-InstalledModule -Name PowershellGet -ErrorAction SilentlyContinue).count -eq 0){
     if(!$WhatIfPreference){
-        Install-Module PowershellGet -Force -Confirm:$false
+        Install-Module PowershellGet -Force -Confirm:$false -Scope CurrentUser
     }
     Write-Host "[Installed]" -ForegroundColor $Colors.Success
 }else{
@@ -180,7 +182,7 @@ foreach($module in $msModules){
     Write-Host -NoNewline " - Installing $module... " -ForegroundColor $Colors.SubStep
     if((Get-InstalledModule -Name $module -ErrorAction SilentlyContinue).count -eq 0){
         if(!$WhatIfPreference){
-            Install-Module $module -Force -Confirm:$false
+            Install-Module $module -Force -Confirm:$false -Scope CurrentUser
         }
         Write-Host "[Installed]" -ForegroundColor $Colors.Success
     }else{
