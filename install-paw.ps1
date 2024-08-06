@@ -130,7 +130,6 @@ Write-Host "[OK]" -ForegroundColor $Colors.Success
 Write-Host " - Starting SSH-Agent..." -NoNewline -ForegroundColor $Colors.SubStep
 if(!$WhatIfPreference){
     start ssh-agent
-    start-ssh-agent.cmd
 }
 Write-Host "[OK]" -ForegroundColor $Colors.Success
 
