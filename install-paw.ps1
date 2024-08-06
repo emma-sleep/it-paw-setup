@@ -163,13 +163,17 @@ Foreach($path in $paths){
 }
 
 
+
+
 ### Installing necessary modules
 Write-Host " "
 Write-Host "Installing all required PowerShell modules:" -ForegroundColor $Colors.Step
 Write-Host -NoNewline " - Installing PowershellGet... " -ForegroundColor $Colors.SubStep
 if((Get-InstalledModule -Name PowershellGet -ErrorAction SilentlyContinue).count -eq 0){
     if(!$WhatIfPreference){
-        Install-Module PowershellGet -Force -Confirm:$false -Scope CurrentUser
+        if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
+            Start-Process PowerShell -Verb RunAs "-NoProfile -ExecutionPolicy Bypass -Command `"Install-Module PowershellGet -Force -Confirm:$false`"";
+        }
     }
     Write-Host "[Installed]" -ForegroundColor $Colors.Success
 }else{
@@ -181,7 +185,9 @@ foreach($module in $msModules){
     Write-Host -NoNewline " - Installing $module... " -ForegroundColor $Colors.SubStep
     if((Get-InstalledModule -Name $module -ErrorAction SilentlyContinue).count -eq 0){
         if(!$WhatIfPreference){
-            Install-Module $module -Force -Confirm:$false -Scope CurrentUser
+            if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
+                Start-Process PowerShell -Verb RunAs "-NoProfile -ExecutionPolicy Bypass -Command `"Install-Module $module -Force -Confirm:$false`"";
+            }
         }
         Write-Host "[Installed]" -ForegroundColor $Colors.Success
     }else{
