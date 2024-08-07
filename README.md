@@ -13,7 +13,7 @@ https://whizzz.emma-sleep.com/share/card/how-to-become-member-to-emma-github-jZl
 Open a PowerShell prompt (as an Administrator) and run the following command:
 
 ```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/emma-sleep/it-paw-setup/main/install-paw.ps1'))
+iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/emma-sleep/it-paw-setup/main/install-paw.ps1'))
 ```
 
 And that's it! 
