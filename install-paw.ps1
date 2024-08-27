@@ -8,11 +8,11 @@ $msModules = @("Microsoft.Graph","ExchangeOnlineManagement","Az.Accounts")
 $emmaModules = @("psmodule-boarding","psmodule-helpers","psmodule-credentials","psmodule-microsoft365","psmodule-snipeit","psmodule-reports")
 ## Paths to be created
 $paths = @(
-    @{  Path = "$([Environment]::GetFolderPath("MyDocuments"))\PowerShell"
+    @{  Path = "$([Environment]::GetFolderPath("UserProfile"))\PowerShell"
         Name = "PowerShell 7 Root" },
-    @{  Path = "$([Environment]::GetFolderPath("MyDocuments"))\PowerShell\Modules"
+    @{  Path = "$([Environment]::GetFolderPath("UserProfile"))\PowerShell\Modules"
         Name = "PowerShell 7 Modules"},
-    @{  Path = "$([Environment]::GetFolderPath("MyDocuments"))\PowerShell\Scripts"
+    @{  Path = "$([Environment]::GetFolderPath("UserProfile"))\PowerShell\Scripts"
         Name = "PowerShell 7 Scripts"}
 )
 ## Colors for Outputs
@@ -203,9 +203,9 @@ if(Test-Path "$([Environment]::GetFolderPath("MyDocuments"))\PowerShell\psprofil
     Write-Host "[Skipped]" -ForegroundColor $Colors.Skipped
 }else{
     if(!$WhatIfPreference){
-        git clone -q git@github.com:emma-sleep/psprofile-windows.git "$([Environment]::GetFolderPath("MyDocuments"))\PowerShell\psprofile"
+        git clone -q git@github.com:emma-sleep/psprofile-windows.git "$([Environment]::GetFolderPath("UserProfile"))\PowerShell\psprofile"
         if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
-            Start-Process PowerShell -Verb RunAs "-NoProfile -ExecutionPolicy Bypass -Command `"New-Item -Path '$PSHOME\Profile.ps1' -Target '$([Environment]::GetFolderPath("MyDocuments"))\PowerShell\psprofile\Microsoft.PowerShell_profile.ps1' -Type SymbolicLink`"";
+            Start-Process PowerShell -Verb RunAs "-NoProfile -ExecutionPolicy Bypass -Command `"New-Item -Path '$PSHOME\Profile.ps1' -Target '$([Environment]::GetFolderPath("UserProfile"))\PowerShell\psprofile\Microsoft.PowerShell_profile.ps1' -Type SymbolicLink`"";
         }
     }
     Write-Host "[Installed]" -ForegroundColor $Colors.Success
@@ -218,12 +218,24 @@ Foreach($module in $emmaModules){
     Write-Host -NoNewline " - Installing $module... " -ForegroundColor $Colors.SubStep
     if((Get-Module -Name $module -ErrorAction SilentlyContinue).count -eq 0){
         if(!$WhatIfPreference){
-            git clone -q git@github.com:emma-sleep/$module.git "$([Environment]::GetFolderPath("MyDocuments"))\PowerShell\Modules\$module"
+            git clone -q git@github.com:emma-sleep/$module.git "$([Environment]::GetFolderPath("UserProfile"))\PowerShell\Modules\$module"
         }
         Write-Host "[Installed]" -ForegroundColor $Colors.Success
     }else{
         Write-Host "[Skipped]" -ForegroundColor $Colors.Skipped
     }
+}
+
+### Set Module to Env Path
+Write-Host " "
+Write-Host "Setting PATH to include new Module path... " -NoNewline -ForegroundColor $Colors.Step
+if($env:PSModulePath -like "*$([Environment]::GetFolderPath("UserProfile"))\PowerShell\Modules*"){
+    Write-Host "[Skipped]" -ForegroundColor $Colors.Skipped
+}else{
+    if(!$WhatIfPreference){
+        $env:PsModulePath = "$($env:PsModulePath);$([Environment]::GetFolderPath("UserProfile"))\PowerShell\Modules"
+    }
+    Write-Host "[OK]" -ForegroundColor $Colors.Success
 }
 
 ### Downloading Emma IT admin Toolbox
@@ -233,7 +245,7 @@ $module = "it-admin-toolbox"
 Write-Host -NoNewline " - Installing $module... " -ForegroundColor $Colors.SubStep
 if((Get-Module -Name $module -ErrorAction SilentlyContinue).count -eq 0){
     if(!$WhatIfPreference){
-        git clone -q git@github.com:emma-sleep/$module.git "$([Environment]::GetFolderPath("MyDocuments"))\PowerShell\Scripts\$module"
+        git clone -q git@github.com:emma-sleep/$module.git "$([Environment]::GetFolderPath("UserProfile"))\PowerShell\Scripts\$module"
     }
     Write-Host "[Installed]" -ForegroundColor $Colors.Success
 }else{
