@@ -203,7 +203,7 @@ if(Test-Path "$([Environment]::GetFolderPath("MyDocuments"))\PowerShell\psprofil
     Write-Host "[Skipped]" -ForegroundColor $Colors.Skipped
 }else{
     if(!$WhatIfPreference){
-        git clone -q git@github.com:emma-sleep/psprofile-windows.git "$([Environment]::GetFolderPath("UserProfile"))\PowerShell\psprofile"
+        git clone -q git@github.com:emma-sleep/psprofile-windows.git "$([Environment]::GetFolderPath("UserProfile"))\PowerShell\psprofile" 
         if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
             Start-Process PowerShell -Verb RunAs "-NoProfile -ExecutionPolicy Bypass -Command `"New-Item -Path '$PSHOME\Profile.ps1' -Target '$([Environment]::GetFolderPath("UserProfile"))\PowerShell\psprofile\Microsoft.PowerShell_profile.ps1' -Type SymbolicLink`"";
         }
